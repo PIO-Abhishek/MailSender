@@ -4,6 +4,7 @@ import com.ibm.as400.access.AS400;
 import com.ibm.as400.access.IFSFile;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -11,11 +12,10 @@ import java.util.*;
 public class IfsUtil {
 
 
-    private Map<String, List<IFSFile>> allDuplicateIFSFiles = new HashMap<>();
-
     private static final String CLASSNAME = "IfsUtil";
+    private final Map<String, List<IFSFile>> allDuplicateIFSFiles = new HashMap<>();
 
-   public static AS400 getIfsAs400Connection() {
+    public static AS400 getIfsAs400Connection() {
 
 
   /*      String ifsSystem = AppUtils.getProperty("host.store");
@@ -27,15 +27,12 @@ public class IfsUtil {
    */
 
 
-
-
 //        return new AS400( "${ifs.host}","${spring.datasource.username}",
 //        "${spring.datasource.password}");
 
 
-            return new AS400("129.40.95.105","ABHISHEK","welcome");
+        return new AS400("129.40.95.105", "ABHISHEK", "welcome");
     }
-
 
 
     public IFSFile getIfsFile(String dir) throws IOException {
@@ -85,7 +82,6 @@ public class IfsUtil {
 
 
     }
-
 
 
 }

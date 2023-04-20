@@ -15,18 +15,15 @@ public class MailServices {
 
 
     @Autowired
-    public MailServices(JavaMailSender javaMailSender)
-    {
-        this.javaMailSender=javaMailSender;
+    public MailServices(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
     }
 
 
     @Async
-    public void sendEmail(SimpleMailMessage email)
-    {
+    public void sendEmail(SimpleMailMessage email) {
         javaMailSender.send(email);
     }
-
 
 
 }

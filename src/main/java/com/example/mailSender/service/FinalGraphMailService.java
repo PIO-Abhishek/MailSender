@@ -33,18 +33,18 @@ public class FinalGraphMailService {
 
         Message message = new Message();
         //subject
-        message.subject = subject;
+        message.subject = "From Graph Api";
         //Body Content
         ItemBody body = new ItemBody();
         body.contentType = BodyType.TEXT;
-        body.content = mailMessage;
+        body.content = "THIS IS GRAPH API EMAIL";
         message.body = body;
         //Recipient address
         LinkedList<Recipient> toRecipientsList = new LinkedList<Recipient>();
 
         Recipient toRecipients = new Recipient();
         EmailAddress emailAddress = new EmailAddress();
-        emailAddress.address = recipent;
+        emailAddress.address = "keshav.mundra@programmers.io";
 
         toRecipients.emailAddress = emailAddress;
         toRecipientsList.add(toRecipients);
@@ -53,7 +53,8 @@ public class FinalGraphMailService {
 
         FileAttachment attachments = new FileAttachment();
         attachments.oDataType = "#microsoft.graph.fileAttachment";
-        attachments.name = "New Text Document.pdf";
+        attachments.name = "New Text Document.docx";
+
 
         String encodedString = Base64.getEncoder().encodeToString(fileString.getBytes());
         attachments.contentBytes = Base64.getDecoder().decode(encodedString);

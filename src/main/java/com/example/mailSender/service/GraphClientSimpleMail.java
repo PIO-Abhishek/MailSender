@@ -42,15 +42,12 @@ public class GraphClientSimpleMail {
                 .clientSecret("A6Y8Q~43TVgu0RApN_KPaqctkDD3M1c8rN2PubBb")
                 .tenantId("273f45e0-e235-4dde-ab7a-fd3e631a88e0")
                 .build();
-        System.out.println("this ");
-        System.out.println(clientSecretCredential.toString());
-       // graphApiScopes.add("Mail.Send");
-        System.out.println(graphApiScopes);
+
         final TokenCredentialAuthProvider tokenCredentialAuthProvider = new TokenCredentialAuthProvider(graphApiScopes, clientSecretCredential);
-        System.out.println(tokenCredentialAuthProvider);
 
         GraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider(tokenCredentialAuthProvider).buildClient();
-        graphClient.getLogger().setLoggingLevel(LoggerLevel.DEBUG);
+
+
         Message message = new Message();
         message.subject = "Meet for lunch?";
         ItemBody body = new ItemBody();
@@ -60,12 +57,12 @@ public class GraphClientSimpleMail {
         LinkedList<Recipient> toRecipientsList = new LinkedList<Recipient>();
         Recipient toRecipients = new Recipient();
         EmailAddress emailAddress = new EmailAddress();
-        emailAddress.address = "bhoomish.atha@programmers.io";
+        emailAddress.address = "carapplicationcare@gmail.com";
         toRecipients.emailAddress = emailAddress;
         toRecipientsList.add(toRecipients);
         message.toRecipients = toRecipientsList;
 
-        graphClient.me()
+        graphClient.users("abhishek.jadhav@programmers.io")
                 .sendMail(UserSendMailParameterSet
                         .newBuilder()
                         .withMessage(message)

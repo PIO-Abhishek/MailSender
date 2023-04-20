@@ -12,7 +12,6 @@ import javax.persistence.*;
 public class MailDetailEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String recipient;
     private String subject;

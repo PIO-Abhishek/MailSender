@@ -1,6 +1,8 @@
 package com.example.mailSender.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.microsoft.graph.models.FileAttachment;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
@@ -10,19 +12,17 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Properties;
 
-
 @Service
-public class sendMailWithAttachment {
-
-    @Autowired
-    IfsUtil ifsUtil;
+public class FinalForGmailService {
 
 
-//    @Scheduled(cron = "${sendMail.file.schedule}")
-//    @Async
-    public void sendAttachedMail() throws MessagingException, IOException {
+
+    @Scheduled(cron = "${sendMail.file.schedule}")
+    @Async
+    public void sendAttachedMail(String subject,String to,String file,String body) throws MessagingException, IOException {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", true);
         properties.put("mail.smtp.starttls.enable", true);
@@ -42,11 +42,11 @@ public class sendMailWithAttachment {
 
         Message message = new MimeMessage(session);
         try {
-            message.setSubject("From SMTP API");
+            message.setSubject(subject);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-        Address addressTo = new InternetAddress("keshav.mundra@programmers.io");
+        Address addressTo = new InternetAddress(to);
         message.addRecipient(Message.RecipientType.TO, addressTo);
         Address addressFrom[] = {new InternetAddress("abhishek.jadhav@programmers.io")};
 
@@ -56,10 +56,20 @@ public class sendMailWithAttachment {
 
 
         MimeBodyPart attachment = new MimeBodyPart();
-       attachment.attachFile(new File("C:\\Users\\AbhishekJadhav\\Desktop\\New Text Document.txt"));
+       /* FileAttachment attachments = new FileAttachment();
+        attachments.oDataType = "#microsoft.graph.fileAttachment";
+        attachments.name = "New Text Document.pdf";
+
+        String encodedString = Base64.getEncoder().encodeToString(file.getBytes());
+        attachments.contentBytes = Base64.getDecoder().decode(encodedString);
+
+
+        attachment.attachFile(new File(String.valueOf(attachment)));
+
+        */
 
         MimeBodyPart messageBody = new MimeBodyPart();
-        messageBody.setContent("<h1> THIS IS TEST SMTP EMAIL</h1>", "text/html");
+        messageBody.setContent(body, "text/html");
         multipart.addBodyPart(messageBody);
         multipart.addBodyPart(attachment);
 

@@ -13,7 +13,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.util.List;
-import java.util.Properties;
 
 @Service
 public class MailSenderService {
@@ -45,16 +44,17 @@ public class MailSenderService {
 
         mailServices.sendEmail(mail);
     }
-  public void sendAttachmentMail(String email, String subject, String message, String path) throws MessagingException {
 
-      MimeMessage mimeMessage=javaMailSender.createMimeMessage();
+    public void sendAttachmentMail(String email, String subject, String message, String path) throws MessagingException {
 
-        MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(mimeMessage,true);
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject(subject);
         mimeMessage.setText(message);
-        FileSystemResource fileSystemResource=new FileSystemResource(new File(path));
-        mimeMessageHelper.addAttachment(fileSystemResource.getFilename(),fileSystemResource);
+        FileSystemResource fileSystemResource = new FileSystemResource(new File(path));
+        mimeMessageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
         javaMailSender.send(mimeMessage);
 
 
@@ -84,7 +84,6 @@ public class MailSenderService {
 
       */
     }
-
 
 
 }

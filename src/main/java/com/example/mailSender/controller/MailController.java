@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 @RestController
@@ -26,45 +26,43 @@ public class MailController {
 
     @Autowired
     GraphClientSimpleMail graphClientSimpleMail;
+    @Autowired
+    GraphClientWithAttachmentService graphClientWithAttachmentService;
 
 
     @RequestMapping("ftp")
     public String ftp() throws IOException, AS400SecurityException, ObjectAlreadyExistsException, MessagingException, MessagingException {
 
 
-        IFSFile file= ifsUtil.getIfsFile("/home/New Text Document.txt");
- //       IFSFileInputStream fis = new IFSFileInputStream(file,IFSFileInputStream.SHARE_NONE);
-        BufferedReader reader = new BufferedReader(new IFSFileReader(file));
+      //  IFSFile file = ifsUtil.getIfsFile("/home/UC36664103_inbound_edi.edi");
+        IFSFile file = null;// = ifsUtil.getIfsFile("/home/UC36664103_inbound_edi.edi");
 
-// Read the first line of the file, converting characters.
-        File file1=new File(String.valueOf(new IFSFileInputStream(file)));
+        String fileString = readFromInputStream(file);
 
-        String line1 = reader.readLine();
 
-        System.out.println(line1);
-
-        reader.close();
-
-  //  String path=("C:\\Users\\AbhishekJadhav\\Desktop\\New Text Document.txt");
-   //     mailSenderService.sendAttachmentMail("abhishek.jadhav@programmers.io","file send","this is try to send file","C:\\Users\\AbhishekJadhav\\Desktop\\New Text Document.txt");
-   //    attachedMail.sendMailWithAttachment("abhishek.jadhav@programmers.io","file send","this is try to send file","C:\\Users\\AbhishekJadhav\\Desktop\\New Text Document.txt");
-
-     //   send.sendAttachedMail();
-        graphClientSimpleMail.simpleGraphApiMail();
+        graphClientWithAttachmentService.getGraphClient(fileString);
         System.out.println("send mail");
 
-        if(!file.exists())
-       {
-           return "no file";
-       }
-       else {
-           return file.getName();
-       }
+        if (!file.exists()) {
+            return "no file";
+        } else {
+            return file.getName();
+        }
     }
 
     @RequestMapping("send")
-    public void sendMail()
-    {
+    public void sendMail() {
         mailSenderService.sendMailToAll();
+    }
+
+    private String readFromInputStream(IFSFile inputStream) throws IOException, AS400SecurityException {
+        StringBuilder resultStringBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new IFSFileReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+        }
+        return resultStringBuilder.toString();
     }
 }

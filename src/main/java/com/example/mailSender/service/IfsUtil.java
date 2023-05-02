@@ -16,22 +16,10 @@ public class IfsUtil {
     private final Map<String, List<IFSFile>> allDuplicateIFSFiles = new HashMap<>();
 
     public static AS400 getIfsAs400Connection() {
+         return new AS400("10.4.64.30", "PROGIO", "PROGIO");
+        // return new AS400("129.40.95.105", "ABHISHEK", "welcome");
 
 
-  /*      String ifsSystem = AppUtils.getProperty("host.store");
-
-        String usr = AppUtils.getProperty("host.dft.user");
-
-        String pass = AppUtils.getProperty("host.dft.pass");
-
-   */
-
-
-//        return new AS400( "${ifs.host}","${spring.datasource.username}",
-//        "${spring.datasource.password}");
-
-
-        return new AS400("129.40.95.105", "ABHISHEK", "welcome");
     }
 
 

@@ -3,70 +3,73 @@ package com.example.mailSender.service;
 import com.azure.identity.ClientSecretCredential;
 import com.azure.identity.ClientSecretCredentialBuilder;
 import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
-import com.microsoft.graph.models.*;
+import com.microsoft.graph.models.Attachment;
+import com.microsoft.graph.models.BodyType;
+import com.microsoft.graph.models.EmailAddress;
+import com.microsoft.graph.models.FileAttachment;
+import com.microsoft.graph.models.ItemBody;
+import com.microsoft.graph.models.Message;
+import com.microsoft.graph.models.Recipient;
+import com.microsoft.graph.models.UserSendMailParameterSet;
 import com.microsoft.graph.requests.AttachmentCollectionPage;
 import com.microsoft.graph.requests.AttachmentCollectionResponse;
 import com.microsoft.graph.requests.GraphServiceClient;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
 @Service
-public class FinalGraphMailHardCodeService {
+public class GraphApiMailService {
+
     private static final List<String> graphApiScopes = Arrays.asList("https://graph.microsoft.com/.default");
 
-    public GraphServiceClient getGraphClient() throws IOException {
-
-
+    public GraphServiceClient getGraphClient(String bytes) {
         final ClientSecretCredential clientSecretCredential = new ClientSecretCredentialBuilder().clientId("2cbed30c-91fa-477b-b68a-093a8e0946e7").clientSecret("A6Y8Q~43TVgu0RApN_KPaqctkDD3M1c8rN2PubBb").tenantId("273f45e0-e235-4dde-ab7a-fd3e631a88e0").build();
 
         final TokenCredentialAuthProvider tokenCredentialAuthProvider = new TokenCredentialAuthProvider(graphApiScopes, clientSecretCredential);
 
-        GraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider(tokenCredentialAuthProvider).buildClient();
+        final GraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider(tokenCredentialAuthProvider).buildClient();
 
         Message message = new Message();
-        //subject//
-        message.subject = "From Graph Api";
-        //Body Content//
+        //subject
+        message.subject = "A better product demo template";
+        //Body Content
         ItemBody body = new ItemBody();
         body.contentType = BodyType.TEXT;
-        body.content = "THIS IS GRAPH API EMAIL";
+        body.content = "HELLO TEAM,\n\n Thank you for your co-operation,Please find the attachment";
         message.body = body;
-        //Recipient address//
-        LinkedList<Recipient> toRecipientsList = new LinkedList<Recipient>();
+        //Recipient address
+        LinkedList<Recipient> toRecipientsList = new LinkedList<>();
 
         Recipient toRecipients = new Recipient();
         EmailAddress emailAddress = new EmailAddress();
         emailAddress.address = "carapplicationcare@gmail.com";
 
+
         toRecipients.emailAddress = emailAddress;
         toRecipientsList.add(toRecipients);
         message.toRecipients = toRecipientsList;
+        LinkedList<Attachment> attachmentsList = new LinkedList<>();
 
-        //File Attachment//
-        FileAttachment attachment = new FileAttachment();
-        attachment.name = "smile.pdf";
-        Path path = Paths.get("C:/Users/AbhishekJadhav/Desktop/Software Design Specification final.pdf");
-        attachment.oDataType = "#microsoft.graph.fileAttachment";
+        FileAttachment attachments = new FileAttachment();
+        attachments.oDataType = "#microsoft.graph.fileAttachment";
+        attachments.name = "Document.txt";
 
-        attachment.contentBytes = Files.readAllBytes(path);
-        List<Attachment> attachmentsList = new LinkedList<Attachment>();
-        attachmentsList.add(attachment);
+        String encodedString = Base64.getEncoder().encodeToString(bytes.getBytes());
+        attachments.contentBytes = Base64.getDecoder().decode(encodedString);
 
+
+        // attachments.contentBytes = bytes;
+        attachmentsList.add(attachments);
 
         AttachmentCollectionResponse attachmentCollectionResponse = new AttachmentCollectionResponse();
         attachmentCollectionResponse.value = attachmentsList;
-        AttachmentCollectionPage attachmentCollectionPage = new AttachmentCollectionPage(attachmentCollectionResponse, null);
-        message.attachments = attachmentCollectionPage;
+        message.attachments = new AttachmentCollectionPage(attachmentCollectionResponse, null);
 
         graphClient.users("abhishek.jadhav@programmers.io").sendMail(UserSendMailParameterSet.newBuilder().withMessage(message).withSaveToSentItems(null).build()).buildRequest().post();
-
 
         return graphClient;
     }

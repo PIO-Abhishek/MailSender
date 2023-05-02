@@ -17,10 +17,7 @@
 		<java.version>8</java.version>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+
 
 		<dependency><!-- Include the sdk as a dependency -->
 			<groupId>com.microsoft.graph</groupId>
@@ -70,11 +67,7 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>jcc</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

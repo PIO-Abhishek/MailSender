@@ -1,7 +1,7 @@
 package com.example.mailSender.controller;
 
-import com.example.mailSender.service.FinalGraphMailHardCodeService;
-import com.example.mailSender.service.FinalMailService;
+import com.example.mailSender.service.SMTP_MailService;
+import com.example.mailSender.service.MailService;
 import com.ibm.as400.access.AS400SecurityException;
 import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +15,21 @@ import java.io.IOException;
 public class GraphController {
 
     @Autowired
-    FinalMailService service;
+    MailService service;
+
     @Autowired
-    FinalGraphMailHardCodeService finalGraphMailHardCodeService;
-
-    @RequestMapping("local")
-    public String localAttachment() throws IOException {
-        finalGraphMailHardCodeService.getGraphClient();
-        return "success";
-    }
+    SMTP_MailService finalForGmailService;
 
 
-    @RequestMapping("pdf")
-    public void pdf() throws IOException, AS400SecurityException, MessagingException, DocumentException {
+
+
+    @RequestMapping("sendEmailUsingGraphApi")
+    public void sendEmailUsingGraphApi() throws IOException, AS400SecurityException, MessagingException, DocumentException {
         service.sendMail();
     }
 
+    @RequestMapping("sendEmailUsingSMTP")
+    public void sendEmailUsingSMTP() throws MessagingException, IOException {
+        finalForGmailService.sendAttachedMail();
+    }
 }

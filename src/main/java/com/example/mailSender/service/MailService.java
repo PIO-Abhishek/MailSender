@@ -3,49 +3,55 @@ package com.example.mailSender.service;
 import com.ibm.as400.access.AS400SecurityException;
 import com.ibm.as400.access.IFSFile;
 import com.ibm.as400.access.IFSFileReader;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Service
-public class FinalMailService {
+public class MailService {
     @Autowired
     IfsUtil ifsUtil;
     @Autowired
-    ItextService service;
+    GraphApiMailService service;
+
+
 
     public void sendMail() throws IOException, AS400SecurityException, MessagingException, DocumentException {
-        IFSFile file = ifsUtil.getIfsFile("/home/UC36664103_inbound_edi.edi");
-        byte[] bytes = readFromInputStream(file);
-        service.getGraphClient(bytes);
+        IFSFile file = ifsUtil.getIfsFile("/home/piolib/SDPFTPF.txt");
+      //  IFSFile file = ifsUtil.getIfsFile("/home/UC36664103_inbound_edi.edi");
+        //byte[] bytes = readFromInputStream(file);
+        service.getGraphClient(readFromInputStream(file));
     }
 
-    private byte[] readFromInputStream(IFSFile inputStream) throws IOException, AS400SecurityException, DocumentException {
+    private String readFromInputStream(IFSFile inputStream) throws IOException, AS400SecurityException, DocumentException {
         StringBuilder resultStringBuilder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new IFSFileReader(inputStream))) {
             String line;
             while ((line = br.readLine()) != null) {
+           //     System.out.println(line);
                 resultStringBuilder.append(line).append("\n");
             }
         }
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        return resultStringBuilder.toString();
 
-        final Document document = new Document();
+      /*  final ByteArrayOutputStream out = new ByteArrayOutputStream();
+          *//*landscape page *//*
+        final Document document = new Document(PageSize.A4);
 
-        final PdfWriter pdfWriter = PdfWriter.getInstance(document, out);
+
+        PdfWriter.getInstance(document, out);
         document.open();
         Paragraph paragraph = new Paragraph(resultStringBuilder.toString());
+        paragraph.setAlignment(Element.ALIGN_JUSTIFIED_ALL);
         document.add(paragraph);
         document.close();
-        return out.toByteArray();
+        return out.toByteArray();*/
     }
+
+
 
 }
